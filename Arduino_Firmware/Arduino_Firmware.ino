@@ -1,8 +1,8 @@
 /*
- Name:		Arduino_Firmware.ino
- Created:	3/9/2022
- Author:	Julien Lecomte
-*/
+ * Arduino_Firmware.ino
+ * Copyright (C) 2022 - Present, Julien Lecomte - All Rights Reserved
+ * Licensed under the MIT License. See the accompanying LICENSE file for terms.
+ */
 
 #include <Servo.h>
 

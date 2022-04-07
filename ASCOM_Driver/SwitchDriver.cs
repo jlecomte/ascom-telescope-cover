@@ -1,10 +1,8 @@
-//tabs=4
-// --------------------------------------------------------------------------------
-// ASCOM Switch driver for Automated Dust Cover
-//
-// Implements:	ASCOM ISwitchV2 interface
-// Author:		Julien Lecomte
-//
+/*
+ * SwitchDriver.cs
+ * Copyright (C) 2022 - Present, Julien Lecomte - All Rights Reserved
+ * Licensed under the MIT License. See the accompanying LICENSE file for terms.
+ */
 
 using ASCOM.DeviceInterface;
 using ASCOM.Utilities;
@@ -554,7 +552,7 @@ namespace ASCOM.AutomatedDustCover
         #region ASCOM Registration
 
         // Register or unregister driver for ASCOM. This is harmless if already
-        // registered or unregistered. 
+        // registered or unregistered.
         //
         /// <summary>
         /// Register or unregister the driver with the ASCOM Platform.

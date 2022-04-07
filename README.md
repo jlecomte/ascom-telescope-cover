@@ -1,5 +1,16 @@
 # Automated Telescope Dust Cover
 
+- [Introduction](#introduction)
+- [Pre-Requisites](#pre-requisites)
+- [Hardware](#hardware)
+- [Compiling The ASCOM Driver](#compiling-the-ascom-driver)
+- [Compiling The Arduino Firmware](#compiling-the-arduino-firmware)
+- [Mechanical Components](#mechanical-components)
+- [Electronic Circuit](#electronic-circuit)
+- [Ideas For Future- Automated Telescope Dust Cover](#ideas-for-future--automated-telescope-dust-cover)
+
+## Introduction
+
 This repository contains code that allows you to build your own automated telescope dust cover. In particular, you will find:
 
 * The code for the ASCOM driver (Microsoft Visual Studio 2022 project)
@@ -60,3 +71,16 @@ Here is what the electronic circuit looks like:
 ![Electronic Circuit](images/Electronic_Circuit.png)
 
 The components are soldered on a 60mm x 40mm PCB.
+
+## Ideas For Future- [Automated Telescope Dust Cover](#automated-telescope-dust-cover)
+  - [Introduction](#introduction)
+  - [Pre-Requisites](#pre-requisites)
+  - [Hardware](#hardware)
+  - [Compiling The ASCOM Driver](#compiling-the-ascom-driver)
+  - [Compiling The Arduino Firmware](#compiling-the-arduino-firmware)
+  - [Mechanical Components](#mechanical-components)
+  - [Electronic Circuit](#electronic-circuit)
+  - [Ideas For Future Improvements](#ideas-for-future-improvements) Improvements
+
+* Remove the need for a separate 12V power connector, i.e. use the USB cable for both data and power. This change would prevent us from using an Arduino-compatible board because the maximum current that can be delivered by an Arduino-compatible board is usually around 200mA, which is not enough for a powerful servo. In order to do this, you'd have to basically build your own Arduino board using a micro-controller, a USB jack, a USB driver, and many other components... It's quite a project on its own, which is why I decided to go the "easy" route...
+* Integrate a flat field panel inside the cover. I wanted to keep this project relatively simple, so I skipped that, but it can be done and would be a great addition to this project!

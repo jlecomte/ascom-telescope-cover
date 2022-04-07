@@ -5,18 +5,25 @@ This repository contains code that allows you to build your own automated telesc
 * The code for the ASCOM driver (Microsoft Visual Studio 2022 project)
 * The code for the Arduino firmware
 * The various STL files to 3D print all the mechanical parts
+* A blueprint for the electronic circuit
+
+Here is a 3D rendering of all the parts involved in this project:
+
+![3D Rendering](3D_Rendering.png)
 
 ## Pre-Requisites
 
+* A Windows computer (I know what you're thinking... The good news is that with [ASCOM Alpaca](https://www.ascom-standards.org/Developer/Alpaca.htm), we will soon have a truly multi-platform solution...)
 * [Microsoft Visual Studio](https://visualstudio.microsoft.com/) (FYI, I used the 2022 edition...)
 * [ASCOM Platform](https://ascom-standards.org/)
 * [ASCOM Platform Developer Components](https://ascom-standards.org/COMDeveloper/Index.htm)
 * [Arduino IDE](https://www.arduino.cc/en/software)
 * A 3D printer able to print PETG, and a slicer (I use a heavily upgraded Creality Ender 3 v2, and Ultimaker Cura)
+* A few basic tools that any tinkerer must own...
 
 ## Hardware
 
-The following are just suggestions... Also, over time, some of the Amazon links may no longer work...
+The following are just suggestions... Also, over time, some of the Amazon links may no longer work... But it should help get you started.
 
 * [Seeeduino XIAO](https://www.amazon.com/dp/B08CN5YSQF)
 * [Mini360 Buck Converters](https://www.amazon.com/dp/B07T7L51ZW)

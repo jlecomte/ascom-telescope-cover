@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Arduino
 __vm/
+
+# Mac OS X files
+.DS_Store

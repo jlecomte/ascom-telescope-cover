@@ -7,10 +7,6 @@ This repository contains code that allows you to build your own automated telesc
 * The various STL files to 3D print all the mechanical parts
 * A blueprint for the electronic circuit
 
-Here is a 3D rendering of all the parts involved in this project:
-
-![3D Rendering](3D_Rendering.png)
-
 ## Pre-Requisites
 
 * A Windows computer (I know what you're thinking... The good news is that with [ASCOM Alpaca](https://www.ascom-standards.org/Developer/Alpaca.htm), we will soon have a truly multi-platform solution...)
@@ -18,6 +14,7 @@ Here is a 3D rendering of all the parts involved in this project:
 * [ASCOM Platform](https://ascom-standards.org/)
 * [ASCOM Platform Developer Components](https://ascom-standards.org/COMDeveloper/Index.htm)
 * [Arduino IDE](https://www.arduino.cc/en/software)
+* [FreeCAD](https://www.freecadweb.org/), a free and open-source 3D parametric modeler
 * A 3D printer able to print PETG, and a slicer (I use a heavily upgraded Creality Ender 3 v2, and Ultimaker Cura)
 * A few basic tools that any tinkerer must own...
 
@@ -47,3 +44,19 @@ Open Microsoft Visual Studio as an administrator (right click on the Microsoft V
 * Add support for Seeeduino boards by following [the instructions from the board manufacturer](https://wiki.seeedstudio.com/Seeeduino-XIAO/).
 * To customize the name of the device when connected to your computer, open the file `boards.txt`, which, on my system and for the version of the Seeeduino board I am using, is located at `%LOCALAPPDATA%\Arduino15\packages\Seeeduino\hardware\samd\1.8.2\boards.txt`. Then, change the value of the key `seeed_XIAO_m0.build.usb_product` from `Seeed XIAO M0` (default) to whatever you'd like.
 * Finally, connect your Seeeduino board to your computer (make sure you use a USB-C cable that supports data and not just power!), open the sketch file located at `Arduino_Firmware\Arduino_Firmware.ino`, and click on the `Upload` button in the toolbar.
+
+## Mechanical Components
+
+Here is a 3D rendering of all the parts involved in this project:
+
+![3D Rendering](images/3D_Rendering.png)
+
+The STL files you will find in the `3D_Files/` folder are just a starting point. You will likely have to create your own version of this project, if only to match the base curvature to your own OTA... That is why I included the FreeCAD file in this repository! (also in the `3D_Files/` folder)
+
+## Electronic Circuit
+
+Here is what the electronic circuit looks like:
+
+![Electronic Circuit](images/Electronic_Circuit.png)
+
+The components are soldered on a 60mm x 40mm PCB.

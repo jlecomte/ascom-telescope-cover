@@ -11,7 +11,11 @@
 
 ## Introduction
 
-This repository contains code that allows you to build your own automated telescope dust cover. In particular, you will find:
+This repository contains code that allows you to build your own automated telescope dust cover. Here is a short demo video of the finished product, hosted on YouTube. Check it out!
+
+[![Short demo video of the finished product](https://img.youtube.com/vi/h6WpVCcGNUw/hqdefault.jpg)](https://www.youtube.com/watch?v=h6WpVCcGNUw)
+
+In this repository, you will find:
 
 * The code for the ASCOM driver (Microsoft Visual Studio 2022 project)
 * The code for the Arduino firmware

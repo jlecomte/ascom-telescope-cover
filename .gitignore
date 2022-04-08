@@ -354,3 +354,6 @@ __vm/
 
 # Mac OS X files
 .DS_Store
+
+# FreeCAD backup files
+*.FCStd1

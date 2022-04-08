@@ -66,11 +66,13 @@ The STL files you will find in the `3D_Files/` folder are just a starting point.
 
 ## Electronic Circuit
 
+![Electronics Blueprint](images/Electronics_Blueprint.png)
+
 Here is what the electronic circuit looks like:
 
 ![Electronic Circuit](images/Electronic_Circuit.png)
 
-The components are soldered on a 60mm x 40mm PCB.
+In the photograph above, the components were soldered onto a 60mm x 40mm PCB.
 
 ## Ideas For Future Improvements
 

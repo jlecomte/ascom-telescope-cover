@@ -13,7 +13,7 @@
 
 This repository contains code that allows you to build your own automated telescope dust cover. Here is a short demo video of the finished product, hosted on YouTube. Check it out!
 
-[![Short demo video of the finished product](https://img.youtube.com/vi/h6WpVCcGNUw/hqdefault.jpg)](https://www.youtube.com/watch?v=h6WpVCcGNUw)
+[![Short demo video of the finished product](images/YouTube-thumbnail.png)](https://www.youtube.com/watch?v=h6WpVCcGNUw)
 
 In this repository, you will find:
 

@@ -4,6 +4,7 @@
 - [Pre-Requisites](#pre-requisites)
 - [Hardware](#hardware)
 - [Compiling The ASCOM Driver](#compiling-the-ascom-driver)
+- [Installing The ASCOM Driver](#installing-the-ascom-driver)
 - [Compiling The Arduino Firmware](#compiling-the-arduino-firmware)
 - [Mechanical Components](#mechanical-components)
 - [Electronic Circuit](#electronic-circuit)

@@ -54,6 +54,20 @@ The following are just suggestions... Also, over time, some of the Amazon links 
 
 Open Microsoft Visual Studio as an administrator (right click on the Microsoft Visual Studio shortcut, and select "Run as administrator") This is required because when building the code, by default, Microsoft Visual Studio will register the necessary COM components, and this operation requires special privileges (Note: This is something you can disable in the project settings...) Then, open the solution (`ASCOM_Driver\ASCOM_Driver.sln`), change the solution configuration to `Release` (in the toolbar), open the `Build` menu and click on `Build ASCOM Driver`. As long as you have properly installed all the required dependencies, the build should succeed and the ASCOM driver will be registered on your system.
 
+## Installing The ASCOM Driver
+
+If you are planning to use the ASCOM driver on a separate computer, you can install it manually, using `RegAsm.exe`. Just don't forget to use the 64 bit version, and to pass the `/tlb /codebase` flags. I know, it's Windows... Anyway, here is what it looked like on my imaging computer:
+
+```
+> C:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe /tlb /codebase ASCOM.AutomatedDustCover.Switch.dll
+Microsoft .NET Framework Assembly Registration Utility version 4.8.4161.0
+for Microsoft .NET Framework version 4.8.4161.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+Types registered successfully
+Assembly exported to 'C:\...\...\...\ASCOM.AutomatedDustCover.Switch.tlb', and the type library was registered successfully
+```
+
 ## Compiling The Arduino Firmware
 
 * Add support for Seeeduino boards by following [the instructions from the board manufacturer](https://wiki.seeedstudio.com/Seeeduino-XIAO/).

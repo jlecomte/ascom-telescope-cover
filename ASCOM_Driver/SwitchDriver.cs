@@ -13,18 +13,18 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace ASCOM.AutomatedDustCover
+namespace ASCOM.DarkSkyGeek
 {
     //
-    // Your driver's DeviceID is ASCOM.AutomatedDustCover.Switch
+    // Your driver's DeviceID is ASCOM.DarkSkyGeek.Switch
     //
-    // The Guid attribute sets the CLSID for ASCOM.AutomatedDustCover.Switch
+    // The Guid attribute sets the CLSID for ASCOM.DarkSkyGeek.Switch
     // The ClassInterface/None attribute prevents an empty interface called
-    // _AutomatedDustCover from being created and used as the [default] interface
+    // _DarkSkyGeek from being created and used as the [default] interface
     //
 
     /// <summary>
-    /// ASCOM Switch Driver for AutomatedDustCover.
+    /// ASCOM Switch Driver for DarkSkyGeek.
     /// </summary>
     [Guid("a8047099-516a-43f4-bf01-c714f2d144b4")]
     [ClassInterface(ClassInterfaceType.None)]
@@ -34,26 +34,34 @@ namespace ASCOM.AutomatedDustCover
         /// ASCOM DeviceID (COM ProgID) for this driver.
         /// The DeviceID is used by ASCOM applications to load the driver at runtime.
         /// </summary>
-        internal const string driverID = "ASCOM.AutomatedDustCover.Switch";
+        internal const string driverID = "ASCOM.DarkSkyGeek.Switch";
 
         /// <summary>
         /// Driver description that displays in the ASCOM Chooser.
         /// </summary>
-        private const string driverDescription = "ASCOM Switch Driver for Automated Dust Cover";
+        private static string deviceName = "DarkSkyGeek’s Telescope Cover";
 
         // Constants used for Profile persistence
-        internal static readonly string comPortProfileName = "COM Port";
-        internal static readonly string comPortDefault = "COM1";
-        internal static readonly string traceStateProfileName = "Trace Level";
-        internal static readonly string traceStateDefault = "false";
+        internal static string autoDetectComPortProfileName = "Auto-Detect COM Port";
+        internal static string autoDetectComPortDefault = "true";
+        internal static string comPortProfileName = "COM Port";
+        internal static string comPortDefault = "COM1";
+        internal static string traceStateProfileName = "Trace Level";
+        internal static string traceStateDefault = "false";
 
         // Variables to hold the current device configuration
-        internal static string comPort;
+        internal static bool autoDetectComPort = Convert.ToBoolean(autoDetectComPortDefault);
+        internal static string comPortOverride = comPortDefault;
 
         /// <summary>
         /// Private variable to hold the connected state
         /// </summary>
         private bool connectedState;
+
+        /// <summary>
+        /// Private variable to hold the COM port we are actually connected to
+        /// </summary>
+        private string comPort;
 
         /// <summary>
         /// Variable to hold the trace logger object (creates a diagnostic log file with information that you specify)
@@ -64,24 +72,28 @@ namespace ASCOM.AutomatedDustCover
         private Serial objSerial;
 
         // Constants used to communicate with the device
+        // Make sure those values are identical to those in the Arduino Firmware.
+        // (I could not come up with an easy way to share them across the two projects)
+        private const string SEPARATOR = "\n";
+
+        private const string DEVICE_GUID = "b45ba2c9-f554-4b4e-a43c-10605ca3b84d";
+
         private const string COMMAND_PING = "COMMAND:PING";
         private const string COMMAND_GETSTATE = "COMMAND:GETSTATE";
         private const string COMMAND_OPEN = "COMMAND:OPEN";
         private const string COMMAND_CLOSE = "COMMAND:CLOSE";
 
-        private const string RESULT_PING = "RESULT:OK";
+        private const string RESULT_PING = "RESULT:PING:OK:";
         private const string RESULT_STATE_OPEN = "RESULT:STATE:OPEN";
         private const string RESULT_STATE_CLOSED = "RESULT:STATE:CLOSED";
 
-        private const string SEPARATOR = "\n";
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutomatedDustCover"/> class.
+        /// Initializes a new instance of the <see cref="Switch"/> class.
         /// Must be public for COM registration.
         /// </summary>
         public Switch()
         {
-            tl = new TraceLogger("", "AutomatedDustCover");
+            tl = new TraceLogger("", "DarkSkyGeek");
             ReadProfile();
             tl.LogMessage("Switch", "Starting initialisation");
             connectedState = false;
@@ -190,6 +202,17 @@ namespace ASCOM.AutomatedDustCover
 
                 if (value)
                 {
+                    if (autoDetectComPort)
+                    {
+                        comPort = DetectCOMPort();
+                    }
+
+                    // Fallback, in case of detection error...
+                    if (comPort == null)
+                    {
+                        comPort = comPortOverride;
+                    }
+
                     if (!System.IO.Ports.SerialPort.GetPortNames().Contains(comPort))
                     {
                         throw new InvalidValueException("Invalid COM port", comPort.ToString(), String.Join(", ", System.IO.Ports.SerialPort.GetPortNames()));
@@ -210,23 +233,23 @@ namespace ASCOM.AutomatedDustCover
                     objSerial.ClearBuffers();
 
                     // Poll the device (with a short timeout value) until successful,
-                    // or until we've reached the retry count limit...
+                    // or until we've reached the retry count limit of 3...
                     objSerial.ReceiveTimeout = 1;
                     bool success = false;
-                    for (int retries = 10; retries >= 0; retries--)
+                    for (int retries = 3; retries >= 0; retries--)
                     {
-                        objSerial.Transmit(COMMAND_PING + SEPARATOR);
                         string response = "";
                         try
                         {
+                            objSerial.Transmit(COMMAND_PING + SEPARATOR);
                             response = objSerial.ReceiveTerminated(SEPARATOR).Trim();
                         }
                         catch (Exception)
                         {
-                            // Timeout exceptions will likely happen here!
+                            // PortInUse or Timeout exceptions may happen here!
                             // We ignore them.
                         }
-                        if (response == RESULT_PING)
+                        if (response == RESULT_PING + DEVICE_GUID)
                         {
                             success = true;
                             break;
@@ -242,7 +265,7 @@ namespace ASCOM.AutomatedDustCover
                     }
 
                     // Restore default timeout value...
-                    objSerial.ReceiveTimeout = 5;
+                    objSerial.ReceiveTimeout = 10;
 
                     connectedState = true;
                 }
@@ -263,8 +286,8 @@ namespace ASCOM.AutomatedDustCover
         {
             get
             {
-                tl.LogMessage("Description Get", driverDescription);
-                return driverDescription;
+                tl.LogMessage("Description Get", deviceName);
+                return deviceName;
             }
         }
 
@@ -273,7 +296,7 @@ namespace ASCOM.AutomatedDustCover
             get
             {
                 Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                string driverInfo = "Automated Dust Cover Driver Version " + String.Format(CultureInfo.InvariantCulture, "{0}.{1}", version.Major, version.Minor);
+                string driverInfo = deviceName + " ASCOM Driver Version " + String.Format(CultureInfo.InvariantCulture, "{0}.{1}", version.Major, version.Minor);
                 tl.LogMessage("DriverInfo Get", driverInfo);
                 return driverInfo;
             }
@@ -304,9 +327,8 @@ namespace ASCOM.AutomatedDustCover
         {
             get
             {
-                string name = "Automated Dust Cover";
-                tl.LogMessage("Name Get", name);
-                return name;
+                tl.LogMessage("Name Get", deviceName);
+                return deviceName;
             }
         }
 
@@ -339,7 +361,7 @@ namespace ASCOM.AutomatedDustCover
         {
             Validate("GetSwitchName", id);
             tl.LogMessage("GetSwitchName", $"GetSwitchName({id})");
-            return "Automated Dust Cover";
+            return deviceName;
         }
 
         /// <summary>
@@ -363,8 +385,8 @@ namespace ASCOM.AutomatedDustCover
         public string GetSwitchDescription(short id)
         {
             Validate("GetSwitchDescription", id);
-            tl.LogMessage("GetSwitchDescription", $"GetSwitchDescription({id}) - not implemented");
-            throw new MethodNotImplementedException("GetSwitchDescription");
+            tl.LogMessage("GetSwitchDescription", $"GetSwitchDescription({id})");
+            return "Automatically opens or closes the telescope cover";
         }
 
         /// <summary>
@@ -420,9 +442,9 @@ namespace ASCOM.AutomatedDustCover
             }
             tl.LogMessage("SetSwitch", $"SetSwitch({id}) = {state}");
             if (state)
-                OpenDustCover();
+                OpenCover();
             else
-                CloseDustCover();
+                CloseCover();
         }
 
         #endregion
@@ -499,9 +521,9 @@ namespace ASCOM.AutomatedDustCover
             }
             tl.LogMessage("SetSwitchValue", $"SetSwitchValue({id}) = {value}");
             if (value == 1.0)
-                OpenDustCover();
+                OpenCover();
             else
-                CloseDustCover();
+                CloseCover();
         }
 
         #endregion
@@ -566,7 +588,7 @@ namespace ASCOM.AutomatedDustCover
                 P.DeviceType = "Switch";
                 if (bRegister)
                 {
-                    P.Register(driverID, driverDescription);
+                    P.Register(driverID, deviceName);
                 }
                 else
                 {
@@ -655,7 +677,8 @@ namespace ASCOM.AutomatedDustCover
             {
                 driverProfile.DeviceType = "Switch";
                 tl.Enabled = Convert.ToBoolean(driverProfile.GetValue(driverID, traceStateProfileName, string.Empty, traceStateDefault));
-                comPort = driverProfile.GetValue(driverID, comPortProfileName, string.Empty, comPortDefault);
+                autoDetectComPort = Convert.ToBoolean(driverProfile.GetValue(driverID, autoDetectComPortProfileName, string.Empty, autoDetectComPortDefault));
+                comPortOverride = driverProfile.GetValue(driverID, comPortProfileName, string.Empty, comPortDefault);
             }
         }
 
@@ -668,8 +691,74 @@ namespace ASCOM.AutomatedDustCover
             {
                 driverProfile.DeviceType = "Switch";
                 driverProfile.WriteValue(driverID, traceStateProfileName, tl.Enabled.ToString());
-                driverProfile.WriteValue(driverID, comPortProfileName, comPort.ToString());
+                driverProfile.WriteValue(driverID, autoDetectComPortProfileName, autoDetectComPortDefault.ToString());
+                if (comPortOverride != null)
+                {
+                    driverProfile.WriteValue(driverID, comPortProfileName, comPortOverride.ToString());
+                }
             }
+        }
+
+        internal string DetectCOMPort()
+        {
+            foreach (string portName in System.IO.Ports.SerialPort.GetPortNames())
+            {
+                Serial serial = null;
+
+                try
+                {
+                    serial = new Serial
+                    {
+                        Speed = SerialSpeed.ps57600,
+                        PortName = portName,
+                        Connected = true,
+                        ReceiveTimeout = 1
+                    };
+                }
+                catch (Exception)
+                {
+                    // If trying to connect to a port that is already in use, an exception will be thrown.
+                    continue;
+                }
+
+                // Wait a second for the serial connection to establish
+                System.Threading.Thread.Sleep(1000);
+
+                serial.ClearBuffers();
+
+                // Poll the device (with a short timeout value) until successful,
+                // or until we've reached the retry count limit of 3...
+                bool success = false;
+                for (int retries = 3; retries >= 0; retries--)
+                {
+                    string response = "";
+                    try
+                    {
+                        serial.Transmit(COMMAND_PING + SEPARATOR);
+                        response = serial.ReceiveTerminated(SEPARATOR).Trim();
+                    }
+                    catch (Exception)
+                    {
+                        // PortInUse or Timeout exceptions may happen here!
+                        // We ignore them.
+                    }
+                    if (response == RESULT_PING + DEVICE_GUID)
+                    {
+                        success = true;
+                        break;
+                    }
+                }
+
+                serial.Connected = false;
+                serial.Dispose();
+
+                if (success)
+                {
+                    return portName;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -714,35 +803,21 @@ namespace ASCOM.AutomatedDustCover
         /// <summary>
         /// Sends a COMMAND:OPEN command to the device and wait until it responds
         /// </summary>
-        private void OpenDustCover()
+        private void OpenCover()
         {
-            tl.LogMessage("OpenDustCover", "Sending request to device...");
+            tl.LogMessage("OpenCover", "Sending request to device...");
             objSerial.Transmit(COMMAND_OPEN + SEPARATOR);
-            tl.LogMessage("OpenDustCover", "Waiting for response from device...");
-            string response = objSerial.ReceiveTerminated(SEPARATOR).Trim();
-            tl.LogMessage("OpenDustCover", "Response from device: " + response);
-            if (response != RESULT_STATE_OPEN)
-            {
-                tl.LogMessage("OpenDustCover", "Invalid response from device: " + response);
-                throw new ASCOM.DriverException("Invalid response from device: " + response);
-            }
+            tl.LogMessage("OpenCover", "Request sent to device!");
         }
 
         /// <summary>
         /// Sends a COMMAND:CLOSE command to the device and wait until it responds
         /// </summary>
-        private void CloseDustCover()
+        private void CloseCover()
         {
-            tl.LogMessage("CloseDustCover", "Sending request to device...");
+            tl.LogMessage("CloseCover", "Sending request to device...");
             objSerial.Transmit(COMMAND_CLOSE + SEPARATOR);
-            tl.LogMessage("CloseDustCover", "Waiting for response from device...");
-            string response = objSerial.ReceiveTerminated(SEPARATOR).Trim();
-            tl.LogMessage("CloseDustCover", "Response from device: " + response);
-            if (response != RESULT_STATE_CLOSED)
-            {
-                tl.LogMessage("CloseDustCover", "Invalid response from device: " + response);
-                throw new ASCOM.DriverException("Invalid response from device: " + response);
-            }
+            tl.LogMessage("CloseCover", "Request sent to device!");
         }
 
         #endregion

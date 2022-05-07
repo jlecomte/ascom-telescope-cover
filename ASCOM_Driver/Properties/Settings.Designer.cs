@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASCOM.AutomatedDustCover.Properties {
+namespace ASCOM.DarkSkyGeek.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

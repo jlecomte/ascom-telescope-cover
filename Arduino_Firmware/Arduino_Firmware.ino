@@ -6,22 +6,25 @@
 
 #include <Servo.h>
 
-constexpr auto COMMAND_PING = "COMMAND:PING";
-constexpr auto COMMAND_INFO = "COMMAND:INFO";
-constexpr auto COMMAND_GETSTATE = "COMMAND:GETSTATE";
-constexpr auto COMMAND_OPEN = "COMMAND:OPEN";
-constexpr auto COMMAND_CLOSE = "COMMAND:CLOSE";
+constexpr auto DEVICE_GUID = "b45ba2c9-f554-4b4e-a43c-10605ca3b84d";
 
-constexpr auto RESULT_PING = "RESULT:OK";
+constexpr auto COMMAND_PING = "COMMAND:PING";
+constexpr auto RESULT_PING = "RESULT:PING:OK:";
+
+constexpr auto COMMAND_INFO = "COMMAND:INFO";
+constexpr auto RESULT_INFO = "RESULT:DarkSkyGeek's Telescope Cover Firmware v1.0";
+
+constexpr auto COMMAND_GETSTATE = "COMMAND:GETSTATE";
 constexpr auto RESULT_STATE_UNKNOWN = "RESULT:STATE:UNKNOWN";
 constexpr auto RESULT_STATE_OPEN = "RESULT:STATE:OPEN";
 constexpr auto RESULT_STATE_CLOSED = "RESULT:STATE:CLOSED";
 
-constexpr auto RESULT_INFO = "RESULT:Automated Dust Cover Firmware v1.0";
+constexpr auto COMMAND_OPEN = "COMMAND:OPEN";
+constexpr auto COMMAND_CLOSE = "COMMAND:CLOSE";
 
 constexpr auto ERROR_INVALID_COMMAND = "ERROR:INVALID_COMMAND";
 
-enum DustCoverState {
+enum CoverState {
     open,
     closed
 } state;
@@ -40,7 +43,7 @@ void setup() {
     Serial.flush();
 
     // Initialize servo.
-    // Important: We assume that the dust cover is in the closed position!
+    // Important: We assume that the cover is in the closed position!
     // If it's not, then the servo will brutally close it when the system is powered up!
     // That may damage the mechanical parts, so be careful...
     servo.write(0);
@@ -61,10 +64,10 @@ void loop() {
             sendCurrentState();
         }
         else if (command == COMMAND_OPEN) {
-            openDustCover();
+            openCover();
         }
         else if (command == COMMAND_CLOSE) {
-            closeDustCover();
+            closeCover();
         }
         else {
             handleInvalidCommand();
@@ -73,7 +76,8 @@ void loop() {
 }
 
 void handlePing() {
-    Serial.println(RESULT_PING);
+    Serial.print(RESULT_PING);
+    Serial.println(DEVICE_GUID);
 }
 
 void sendFirmwareInfo() {
@@ -94,7 +98,7 @@ void sendCurrentState() {
     }
 }
 
-void openDustCover() {
+void openCover() {
     int pos = servo.read();
     // Serial.print("Current position of servo is ");
     // Serial.println(pos);
@@ -106,12 +110,9 @@ void openDustCover() {
     }
 
     state = open;
-
-    // Notify the driver that we're done
-    sendCurrentState();
 }
 
-void closeDustCover() {
+void closeCover() {
     int pos = servo.read();
     // Serial.print("Current position of servo is ");
     // Serial.println(pos);
@@ -123,9 +124,6 @@ void closeDustCover() {
     }
 
     state = closed;
-
-    // Notify the driver that we're done
-    sendCurrentState();
 }
 
 void handleInvalidCommand() {

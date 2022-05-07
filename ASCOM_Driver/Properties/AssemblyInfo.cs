@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("ASCOM.AutomatedDustCover.Switch")]
-[assembly: AssemblyDescription("ASCOM Switch driver for Automated Dust Cover")]
+[assembly: AssemblyTitle("ASCOM.DarkSkyGeek.Switch")]
+[assembly: AssemblyDescription("DarkSkyGeek’s Telescope Cover")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ASCOM Switch driver for Automated Dust Cover")]
-[assembly: AssemblyCopyright("Copyright © 2022 Julien Lecomte")]
+[assembly: AssemblyProduct("DarkSkyGeek’s Telescope Cover")]
+[assembly: AssemblyCopyright("Copyright © 2022 - Present, Julien Lecomte - All Rights Reserved")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

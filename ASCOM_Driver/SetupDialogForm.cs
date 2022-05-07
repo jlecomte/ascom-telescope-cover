@@ -1,25 +1,17 @@
-/*
- * SetupDialogForm.cs
- * Copyright (C) 2022 - Present, Julien Lecomte - All Rights Reserved
- * Licensed under the MIT License. See the accompanying LICENSE file for terms.
- */
-
-using ASCOM.AutomatedDustCover;
 using ASCOM.Utilities;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 
-namespace ASCOM.AutomatedDustCover
+namespace ASCOM.DarkSkyGeek
 {
-    [ComVisible(false)]					// Form not registered for COM!
+    // Form not registered for COM!
+    [ComVisible(false)]
+
     public partial class SetupDialogForm : Form
     {
-        TraceLogger tl; // Holder for a reference to the driver's trace logger
+        // Holder for a reference to the driver's trace logger
+        TraceLogger tl;
 
         public SetupDialogForm(TraceLogger tlDriver)
         {
@@ -28,7 +20,7 @@ namespace ASCOM.AutomatedDustCover
             // Save the provided trace logger for use within the setup dialogue
             tl = tlDriver;
 
-            // Initialize current values of user settings from the ASCOM Profile
+            // Initialise current values of user settings from the ASCOM Profile
             InitUI();
         }
 
@@ -36,7 +28,8 @@ namespace ASCOM.AutomatedDustCover
         {
             // Place any validation constraint checks here
             // Update the state variables with results from the dialogue
-            Switch.comPort = (string)comboBoxComPort.SelectedItem;
+            Switch.autoDetectComPort = chkAutoDetect.Checked;
+            Switch.comPortOverride = (string)comboBoxComPort.SelectedItem;
             tl.Enabled = chkTrace.Checked;
         }
 
@@ -64,16 +57,23 @@ namespace ASCOM.AutomatedDustCover
 
         private void InitUI()
         {
+            chkAutoDetect.Checked = Switch.autoDetectComPort;
             chkTrace.Checked = tl.Enabled;
-            // set the list of com ports to those that are currently available
+            comboBoxComPort.Enabled = !chkAutoDetect.Checked;
+            // Set the list of COM ports to those that are currently available
             comboBoxComPort.Items.Clear();
-            // use System.IO because it's static
+            // Use System.IO because it's static
             comboBoxComPort.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
-            // select the current port if possible
-            if (comboBoxComPort.Items.Contains(Switch.comPort))
+            // Select the current port if possible
+            if (comboBoxComPort.Items.Contains(Switch.comPortOverride))
             {
-                comboBoxComPort.SelectedItem = Switch.comPort;
+                comboBoxComPort.SelectedItem = Switch.comPortOverride;
             }
+        }
+
+        private void chkAutoDetect_CheckedChanged(object sender, EventArgs e)
+        {
+            comboBoxComPort.Enabled = !((CheckBox)sender).Checked;
         }
     }
 }

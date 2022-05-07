@@ -1,4 +1,4 @@
-# Automated Telescope Dust Cover
+# ASCOM-Compatible Telescope Cover
 
 - [Introduction](#introduction)
 - [Pre-Requisites](#pre-requisites)
@@ -12,7 +12,7 @@
 
 ## Introduction
 
-This repository contains code that allows you to build your own automated telescope dust cover. Here is a short demo video of the finished product, hosted on YouTube. Check it out!
+This repository contains code that allows you to build your own automated telescope cover. Here is a short demo video of the finished product, hosted on YouTube. Check it out!
 
 [![Short demo video of the finished product](images/YouTube-thumbnail.png)](https://www.youtube.com/watch?v=h6WpVCcGNUw)
 
@@ -60,13 +60,13 @@ Open Microsoft Visual Studio as an administrator (right click on the Microsoft V
 If you are planning to use the ASCOM driver on a separate computer, you can install it manually, using `RegAsm.exe`. Just don't forget to use the 64 bit version, and to pass the `/tlb /codebase` flags. I know, it's Windows... Anyway, here is what it looked like on my imaging computer:
 
 ```
-> C:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe /tlb /codebase ASCOM.AutomatedDustCover.Switch.dll
+> C:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe /tlb /codebase ASCOM.DarkSkyGeek.Switch.dll
 Microsoft .NET Framework Assembly Registration Utility version 4.8.4161.0
 for Microsoft .NET Framework version 4.8.4161.0
 Copyright (C) Microsoft Corporation.  All rights reserved.
 
 Types registered successfully
-Assembly exported to 'C:\...\...\...\ASCOM.AutomatedDustCover.Switch.tlb', and the type library was registered successfully
+Assembly exported to 'C:\...\...\...\ASCOM.DarkSkyGeek.Switch.tlb', and the type library was registered successfully
 ```
 
 ## Compiling The Arduino Firmware

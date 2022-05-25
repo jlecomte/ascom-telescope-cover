@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ASCOM.DarkSkyGeek</RootNamespace>
-    <AssemblyName>ASCOM.DarkSkyGeek.Switch</AssemblyName>
+    <AssemblyName>ASCOM.DarkSkyGeek.TelescopeCover</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>

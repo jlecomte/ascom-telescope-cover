@@ -1,14 +1,21 @@
 # ASCOM-Compatible Telescope Cover
 
+<!-- toc -->
+
 - [Introduction](#introduction)
 - [Pre-Requisites](#pre-requisites)
 - [Hardware](#hardware)
-- [Compiling The ASCOM Driver](#compiling-the-ascom-driver)
-- [Installing The ASCOM Driver](#installing-the-ascom-driver)
-- [Compiling The Arduino Firmware](#compiling-the-arduino-firmware)
+- [ASCOM Driver](#ascom-driver)
+  - [Compiling The Driver](#compiling-the-driver)
+  - [Installing The Driver](#installing-the-driver)
+- [Arduino Firmware](#arduino-firmware)
+  - [Microcontroller Compatibility](#microcontroller-compatibility)
+  - [Compiling And Uploading The Firmware](#compiling-and-uploading-the-firmware)
 - [Mechanical Components](#mechanical-components)
 - [Electronic Circuit](#electronic-circuit)
 - [Ideas For Future Improvements](#ideas-for-future-improvements)
+
+<!-- tocstop -->
 
 ## Introduction
 
@@ -25,20 +32,20 @@ In this repository, you will find:
 
 ## Pre-Requisites
 
-* A Windows computer (I know what you're thinking... The good news is that with [ASCOM Alpaca](https://www.ascom-standards.org/Developer/Alpaca.htm), we will soon have a truly multi-platform solution...)
+* A Windows computer (Windows 10 or newer)
 * [Microsoft Visual Studio](https://visualstudio.microsoft.com/) (FYI, I used the 2022 edition...)
 * [ASCOM Platform](https://ascom-standards.org/)
 * [ASCOM Platform Developer Components](https://ascom-standards.org/COMDeveloper/Index.htm)
 * [Arduino IDE](https://www.arduino.cc/en/software)
 * [FreeCAD](https://www.freecadweb.org/), a free and open-source 3D parametric modeler
 * A 3D printer able to print PETG, and a slicer (I use a heavily upgraded Creality Ender 3 v2, and Ultimaker Cura)
-* A few basic tools that any tinkerer must own...
+* A few basic tools that any tinkerer must own, such as a breadboard, a soldering iron, etc.
 
 ## Hardware
 
-The following are just suggestions... Also, over time, some of the Amazon links may no longer work... But it should help get you started.
+The following are just suggestions... Also, over time, some of the Amazon links may no longer work...
 
-* [Seeeduino XIAO](https://www.amazon.com/dp/B08CN5YSQF)
+* [Seeeduino XIAO](https://www.seeedstudio.com/Seeeduino-XIAO-Arduino-Microcontroller-SAMD21-Cortex-M0+-p-4426.html) (You can get it quicker from Amazon, but you will have to pay twice as much!)
 * [Mini360 Buck Converters](https://www.amazon.com/dp/B07T7L51ZW)
 * [Perforated Circuit Board (PCB)](https://www.amazon.com/dp/B07NM68FXK)
 * [DC Power Jack](https://www.amazon.com/dp/B01N8VV78D)
@@ -51,11 +58,13 @@ The following are just suggestions... Also, over time, some of the Amazon links 
 * [Easy-to-print PETG filament](https://www.amazon.com/dp/B07PGYHYV8)
 * [Stainless steel cut-to-length hose clamp](https://www.amazon.com/dp/product/B08Y6LSL3R)
 
-## Compiling The ASCOM Driver
+## ASCOM Driver
+
+### Compiling The Driver
 
 Open Microsoft Visual Studio as an administrator (right click on the Microsoft Visual Studio shortcut, and select "Run as administrator") This is required because when building the code, by default, Microsoft Visual Studio will register the necessary COM components, and this operation requires special privileges (Note: This is something you can disable in the project settings...) Then, open the solution (`ASCOM_Driver\ASCOM.DarkSkyGeek.TelescopeCover.sln`), change the solution configuration to `Release` (in the toolbar), open the `Build` menu and click on `Build Solution`. As long as you have properly installed all the required dependencies, the build should succeed and the ASCOM driver will be registered on your system. The binary file generated will be `ASCOM_Driver\bin\Release\ASCOM.DarkSkyGeek.TelescopeCover.dll`. You may also download this file from the [Releases page](https://github.com/jlecomte/ascom-telescope-cover/releases).
 
-## Installing The ASCOM Driver
+### Installing The Driver
 
 If you are planning to use the ASCOM driver on a separate computer, you can install it manually, using `RegAsm.exe`. Just don't forget to use the 64 bit version, and to pass the `/tlb /codebase` flags. I know, it's Windows... Anyway, here is what it looked like on my imaging computer:
 
@@ -68,7 +77,13 @@ Copyright (C) Microsoft Corporation.  All rights reserved.
 Types registered successfully
 ```
 
-## Compiling The Arduino Firmware
+## Arduino Firmware
+
+### Microcontroller Compatibility
+
+Pretty much all Arduino-compatible boards should work. There is nothing magical about the firmware. However, see the comment regarding the pins and the servo library. Depending on the exact board you picked, you might have to change that.
+
+### Compiling And Uploading The Firmware
 
 * Add support for Seeeduino boards by following [the instructions from the board manufacturer](https://wiki.seeedstudio.com/Seeeduino-XIAO/).
 * To customize the name of the device when connected to your computer, open the file `boards.txt`, which, on my system and for the version of the Seeeduino board I am using, is located at `%LOCALAPPDATA%\Arduino15\packages\Seeeduino\hardware\samd\1.8.2\boards.txt`. Then, change the value of the key `seeed_XIAO_m0.build.usb_product` from `Seeed XIAO M0` (default) to whatever you'd like.

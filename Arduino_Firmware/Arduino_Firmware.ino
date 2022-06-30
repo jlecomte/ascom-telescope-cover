@@ -48,6 +48,15 @@ void setup() {
     // That may damage the mechanical parts, so be careful...
     servo.write(0);
     servo.attach(9);
+
+    // Make sure the RX, TX, and built-in LEDs don't turn on, they are very bright!
+    // Even though the board is inside an enclosure, the light can be seen shining
+    // through the small opening for the USB connector! Unfortunately, it is not
+    // possible to turn off the power LED (green) in code...
+    pinMode(PIN_LED_TXL, INPUT);
+    pinMode(PIN_LED_RXL, INPUT);
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, HIGH);
 }
 
 // The `loop` function runs over and over again until power down or reset.

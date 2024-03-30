@@ -50,17 +50,17 @@ In this repository, you will find:
 The following are just suggestions... Also, over time, some of the Amazon links may no longer work...
 
 * [Seeeduino XIAO](https://www.seeedstudio.com/Seeeduino-XIAO-Arduino-Microcontroller-SAMD21-Cortex-M0+-p-4426.html) (You can get it quicker from Amazon, but you will have to pay twice as much!)
-* [Mini360 Buck Converters](https://www.amazon.com/dp/B07T7L51ZW)
-* [Perforated Circuit Board (PCB)](https://www.amazon.com/dp/B07NM68FXK)
-* [DC Power Jack](https://www.amazon.com/dp/B01N8VV78D)
-* [High torque quality Servo with 270° control angle](https://www.amazon.com/dp/B07S9XZYN2)
-* [Aluminum Servo Horn](https://www.amazon.com/dp/B07D56FVK5)
-* [Bench Power Supply](https://www.amazon.com/dp/B07GCJ5QHF)
-* [Threaded inserts for 3D printed parts](https://www.amazon.com/dp/B07VFZWWXY)
-* [Assortment of small metric screws, nuts, and washers](https://www.amazon.com/dp/B08JCKH31Q)
-* [22AWG solid core electrical wires](https://www.amazon.com/dp/B088KQFHV7)
-* [Easy-to-print PETG filament](https://www.amazon.com/dp/B07PGYHYV8)
-* [Stainless steel cut-to-length hose clamp](https://www.amazon.com/dp/product/B08Y6LSL3R)
+* [Mini360 Buck Converters](https://www.amazon.com/dp/B07T7L51ZW?tag=darkskygeek-20)
+* [Perforated Circuit Board (PCB)](https://www.amazon.com/dp/B07NM68FXK?tag=darkskygeek-20)
+* [DC Power Jack](https://www.amazon.com/dp/B01N8VV78D?tag=darkskygeek-20)
+* [High torque quality Servo with 270° control angle](https://www.amazon.com/dp/B07S9XZYN2?tag=darkskygeek-20)
+* [Aluminum Servo Horn](https://www.amazon.com/dp/B07D56FVK5?tag=darkskygeek-20)
+* [Bench Power Supply](https://www.amazon.com/dp/B07GCJ5QHF?tag=darkskygeek-20)
+* [Threaded inserts for 3D printed parts](https://www.amazon.com/dp/B07VFZWWXY?tag=darkskygeek-20)
+* [Assortment of small metric screws, nuts, and washers](https://www.amazon.com/dp/B08JCKH31Q?tag=darkskygeek-20)
+* [22AWG solid core electrical wires](https://www.amazon.com/dp/B088KQFHV7?tag=darkskygeek-20)
+* [Easy-to-print PETG filament](https://www.amazon.com/dp/B07PGYHYV8?tag=darkskygeek-20)
+* [Stainless steel cut-to-length hose clamp](https://www.amazon.com/dp/product/B08Y6LSL3R?tag=darkskygeek-20)
 
 ## ASCOM Driver
 

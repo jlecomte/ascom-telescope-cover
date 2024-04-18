@@ -255,17 +255,27 @@ void handleInvalidCommand() {
 int powerUpServo() {
   digitalWrite(SERVO_SWITCH_PIN, HIGH);
 
+  // Default position (closed), which will be used only once,
+  // before we have successfully calibrated the servo.
   int pos = 0;
 
   if (servoCalibrationData.magicNumber == NVM_MAGIC_NUMBER) {
+    // Short delay, so that the servo has been fully initialized.
+    // Not 100% sure this is necessary, but it won't hurt.
     delay(100);
 
     int feedbackValue = analogRead(SERVO_FEEDBACK_PIN);
     pos = (int)((feedbackValue - servoCalibrationData.intercept) / servoCalibrationData.slope);
   }
 
+  // This step is critical! Without it, the servo does not know its position when it is attached below,
+  // and the first write command will make it jerk to that position, which is what we want to avoid...
   servo.write(pos);
-  servo.attach(SERVO_CONTROL_PIN);
+
+  // The optional min and max pulse width parameters are actually quite important
+  // and depend on the exact servo you are using. Without specifying them, you may
+  // not be able to use the full range of motion (270 degrees for this project)
+  servo.attach(SERVO_CONTROL_PIN, 500, 2500);
 
   return pos;
 }

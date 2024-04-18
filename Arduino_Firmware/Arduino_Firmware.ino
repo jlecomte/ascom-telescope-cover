@@ -35,9 +35,10 @@ constexpr auto RESULT_CALIBRATOR_STATE_OFF = "RESULT:CALIBRATOR:GETSTATE:OFF";
 constexpr auto ERROR_INVALID_COMMAND = "ERROR:INVALID_COMMAND";
 
 // Pins assignment. Change these depending on your exact wiring!
-const unsigned int CALIBRATOR_SWITCH_PIN = 7;
-const unsigned int MOTOR_FEEDBACK_PIN = 8;
-const unsigned int MOTOR_CONTROL_PIN = 9;
+const unsigned int CALIBRATOR_SWITCH_PIN = 6;
+const unsigned int SERVO_SWITCH_PIN = 7;
+const unsigned int SERVO_FEEDBACK_PIN = 8;
+const unsigned int SERVO_CONTROL_PIN = 9;
 
 // Value used to determine whether the NVM (Non-Volatile Memory) was written,
 // or we are just reading garbage...
@@ -64,7 +65,6 @@ FlashStorage(nvmStore, ServoCalibration);
 Servo servo;
 ServoCalibration servoCalibrationData;
 
-// The `setup` function runs once when you press reset or power the board.
 void setup() {
   // Initialize serial port I/O.
   Serial.begin(57600);
@@ -78,8 +78,9 @@ void setup() {
 
   // Initialize pins...
   pinMode(CALIBRATOR_SWITCH_PIN, OUTPUT);
-  pinMode(MOTOR_FEEDBACK_PIN, INPUT);
-  pinMode(MOTOR_CONTROL_PIN, OUTPUT);
+  pinMode(SERVO_SWITCH_PIN, OUTPUT);
+  pinMode(SERVO_FEEDBACK_PIN, INPUT);
+  pinMode(SERVO_CONTROL_PIN, OUTPUT);
 
   // Make sure the RX, TX, and built-in LEDs don't turn on, they are very bright!
   // Even though the board is inside an enclosure, the light can be seen shining
@@ -90,15 +91,18 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
+  // Make sure the servo is initially de-energized...
+  digitalWrite(SERVO_SWITCH_PIN, LOW);
+
   // Make sure the calibrator is initially turned off...
   digitalWrite(CALIBRATOR_SWITCH_PIN, LOW);
   calibratorState = off;
 
-  // Initialize the cover.
+  // Close the cover, in case it is not completely closed.
+  // If the cover has not yet been calibrated, this will be a no-op.
   closeCover();
 }
 
-// The `loop` function runs over and over again until power down or reset.
 void loop() {
   if (Serial.available() > 0) {
     String command = Serial.readStringUntil('\n');
@@ -160,13 +164,10 @@ void openCover() {
     return;
   }
 
-  servo.attach(MOTOR_CONTROL_PIN);
+  int pos = powerUpServo();
 
-  int feedbackValue = analogRead(MOTOR_FEEDBACK_PIN);
-  int pos = (int)((feedbackValue - servoCalibrationData.intercept) / servoCalibrationData.slope);
-
-  if (pos < 180) {
-    for (; pos <= 180; pos++) {
+  if (pos < 190) {
+    for (; pos <= 190; pos++) {
       servo.write(pos);
       delay(30);
     }
@@ -174,7 +175,7 @@ void openCover() {
 
   coverState = open;
 
-  servo.detach();
+  powerDownServo();
 }
 
 void closeCover() {
@@ -182,10 +183,7 @@ void closeCover() {
     return;
   }
 
-  servo.attach(MOTOR_CONTROL_PIN);
-
-  int feedbackValue = analogRead(MOTOR_FEEDBACK_PIN);
-  int pos = (int)((feedbackValue - servoCalibrationData.intercept) / servoCalibrationData.slope);
+  int pos = powerUpServo();
 
   if (pos > 0) {
     for (; pos >= 0; pos--) {
@@ -196,13 +194,13 @@ void closeCover() {
 
   coverState = closed;
 
-  servo.detach();
+  powerDownServo();
 }
 
 void calibrateCover() {
-  servo.attach(MOTOR_CONTROL_PIN);
+  powerUpServo();
 
-  int step = 5;
+  int step = 10;
   int nDataPoints = 1 + 180 / step;
 
   double x[nDataPoints] = { 0 };
@@ -211,7 +209,7 @@ void calibrateCover() {
   for (int i = 0, pos = 0; pos <= 180; i++, pos = i * step) {
     servo.write(pos);
     delay(1000);
-    int feedbackValue = analogRead(MOTOR_FEEDBACK_PIN);
+    int feedbackValue = analogRead(SERVO_FEEDBACK_PIN);
     x[i] = pos;
     y[i] = feedbackValue;
   }
@@ -253,7 +251,33 @@ void handleInvalidCommand() {
   Serial.println(ERROR_INVALID_COMMAND);
 }
 
-// Function to calculate the mean of an array
+// Energize and attach servo.
+int powerUpServo() {
+  digitalWrite(SERVO_SWITCH_PIN, HIGH);
+
+  int pos = 0;
+
+  if (servoCalibrationData.magicNumber == NVM_MAGIC_NUMBER) {
+    delay(100);
+
+    int feedbackValue = analogRead(SERVO_FEEDBACK_PIN);
+    pos = (int)((feedbackValue - servoCalibrationData.intercept) / servoCalibrationData.slope);
+  }
+
+  servo.write(pos);
+  servo.attach(SERVO_CONTROL_PIN);
+
+  return pos;
+}
+
+// Detach and de-energize servo to eliminate any possible sources of vibrations.
+// Magnets will keep the cover in position, whether it is open or closed.
+void powerDownServo() {
+  servo.detach();
+  digitalWrite(SERVO_SWITCH_PIN, LOW);
+}
+
+// Function to calculate the mean of an array.
 double mean(double arr[], int n) {
     double sum = 0.0;
     for (int i = 0; i < n; i++) {
@@ -262,7 +286,7 @@ double mean(double arr[], int n) {
     return sum / n;
 }
 
-// Function to calculate the slope and intercept of a linear regression line
+// Function to calculate the slope and intercept of a linear regression line.
 void linearRegression(double x[], double y[], int n, double *slope, double *intercept) {
     double x_mean = mean(x, n);
     double y_mean = mean(y, n);

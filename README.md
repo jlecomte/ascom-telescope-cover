@@ -4,6 +4,8 @@ I do not charge anything to create and maintain these open-source projects. But 
 
 [![](images/donate.png)](https://www.paypal.com/donate/?hosted_button_id=49UXY8F6VVYFA)
 
+:warning: **IMPORTANT:** :warning: **I NO LONGER ACTIVELY MAINTAIN THIS PROJECT. INSTEAD, CHECK OUT [MY NEW TELESCOPE COVER V2](https://github.com/jlecomte/ascom-telescope-cover-v2).**
+
 <!-- toc -->
 
 - [Introduction](#introduction)
